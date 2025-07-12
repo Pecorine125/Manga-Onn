@@ -6,10 +6,21 @@
   <link rel="stylesheet" href="../styles/menu.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white">
-  <h2 class="text-center text-2xl mt-5">Escolha um mangá</h2>
-  <div id="menu" class="grid grid-cols-2 gap-4 p-4"></div>
-  <button onclick="closeApp()">Fechar</button>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen">
+  <h2 class="text-2xl mb-4">Escolha um mangá</h2>
+
+  <!-- Carrossel -->
+  <div class="relative w-64 h-96 overflow-hidden">
+    <div id="slider" class="w-full h-full flex transition-transform duration-500 ease-in-out">
+      <!-- Imagens serão inseridas via JavaScript -->
+    </div>
+
+    <!-- Botões -->
+    <button onclick="prev()" class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-white text-black px-2 py-1 rounded-r">◀</button>
+    <button onclick="next()" class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-white text-black px-2 py-1 rounded-l">▶</button>
+  </div>
+
+  <button onclick="closeApp()" class="mt-6 bg-red-600 px-4 py-2 rounded hover:bg-red-700">Fechar</button>
 
   <script src="../scripts/menu.js"></script>
 </body>
