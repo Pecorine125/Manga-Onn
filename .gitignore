@@ -1,9 +1,10 @@
-# Ignorar pasta de links
+# Ignorar pastas
 txt/
 
-# Ignorar o script Python
+# Ignorar arquivos específicos
+mangas.json
 manga github.py
+.gitignore
 
-# Ignorar arquivos de sistema ou cache do python
+# Ignorar pastas de cache
 __pycache__/
-*.pyc
