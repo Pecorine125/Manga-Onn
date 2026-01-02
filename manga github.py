@@ -8,7 +8,7 @@ from pathlib import Path
 # Onde estão os seus arquivos .txt
 CAMINHO_TXT = r'C:\Users\harah\Videos\Teste\Python\txt'
 
-# Onde os mangás serão salvos no seu PC (Pasta do Repositório)
+# Pasta do seu repositório no PC
 CAMINHO_REPO_LOCAL = r'C:\Users\harah\Videos\Teste\Python'
 
 def baixar_imagem(url, pasta_destino, nome_arquivo):
@@ -24,25 +24,25 @@ def baixar_imagem(url, pasta_destino, nome_arquivo):
         return False
 
 def atualizar_lista_json(pasta_mangas):
-    # Cria/Atualiza o mangas.json com o nome das pastas
+    # Cria o arquivo para o site saber quais mangás existem
     mangas = [d for d in os.listdir(pasta_mangas) if os.path.isdir(os.path.join(pasta_mangas, d))]
     with open(os.path.join(CAMINHO_REPO_LOCAL, 'mangas.json'), 'w', encoding='utf-8') as f:
         json.dump(mangas, f, ensure_ascii=False, indent=4)
 
 def enviar_ao_github():
-    print("\n--- Iniciando Envio Automático para o GitHub ---")
+    print("\n--- Enviando para o GitHub ---")
     try:
-        # 1. Garante que está no branch main
+        # 1. Muda para o branch main (padrão do GitHub)
         subprocess.run(["git", "branch", "-M", "main"], cwd=CAMINHO_REPO_LOCAL)
-        # 2. Adiciona as mudanças (capas, mangas e json)
+        # 2. Adiciona tudo o que foi criado/modificado
         subprocess.run(["git", "add", "."], cwd=CAMINHO_REPO_LOCAL, check=True)
-        # 3. Cria o commit
-        subprocess.run(["git", "commit", "-m", "Auto-update: Mangas e Capas"], cwd=CAMINHO_REPO_LOCAL, check=True)
-        # 4. Faz o push
+        # 3. Faz o commit
+        subprocess.run(["git", "commit", "-m", "Auto-upload: Novo manga e capa"], cwd=CAMINHO_REPO_LOCAL, check=True)
+        # 4. Faz o push (envio real)
         subprocess.run(["git", "push", "origin", "main"], cwd=CAMINHO_REPO_LOCAL, check=True)
-        print(">>> SUCESSO: Tudo enviado para o GitHub!")
+        print(">>> SUCESSO: Arquivos enviados para o seu GitHub!")
     except Exception as e:
-        print(f">>> ERRO no Git: {e}")
+        print(f">>> ERRO ao enviar: {e}")
 
 def main():
     pasta_mangas = os.path.join(CAMINHO_REPO_LOCAL, 'mangas')
@@ -54,7 +54,7 @@ def main():
     arquivos_txt = [f for f in os.listdir(CAMINHO_TXT) if f.endswith('.txt')]
     
     if not arquivos_txt:
-        print(f"Nenhum arquivo .txt em: {CAMINHO_TXT}")
+        print("Nenhum .txt encontrado.")
         return
 
     for arquivo in arquivos_txt:
@@ -62,7 +62,7 @@ def main():
         diretorio_manga = os.path.join(pasta_mangas, nome_manga)
         os.makedirs(diretorio_manga, exist_ok=True)
         
-        print(f"\nProcessando: {nome_manga}")
+        print(f"\nBaixando: {nome_manga}")
         
         with open(os.path.join(CAMINHO_TXT, arquivo), 'r') as f:
             urls = [l.strip() for l in f.readlines() if l.strip()]
@@ -72,15 +72,13 @@ def main():
                 if i == 0:
                     baixar_imagem(url, pasta_capas, f"{nome_manga}.jpg")
                 
-                # Salva as páginas (001, 002...)
+                # Salva todas como páginas (001, 002...)
                 nome_img = f"{str(i+1).zfill(3)}.jpg"
                 baixar_imagem(url, diretorio_manga, nome_img)
-                print(f"  > Baixando {i+1} de {len(urls)}", end="\r")
+                print(f"  > Pagina {i+1}/{len(urls)}", end="\r")
 
-    # Atualiza o arquivo de lista para o seu futuro site
+    # Gera a lista e envia pro Git
     atualizar_lista_json(pasta_mangas)
-    
-    # Envia tudo para o GitHub
     enviar_ao_github()
 
 if __name__ == "__main__":
