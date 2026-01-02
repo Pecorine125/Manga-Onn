@@ -1,72 +1,68 @@
 import os
 import requests
-import subprocess
 from pathlib import Path
 
 # --- CONFIGURAÇÕES ---
-# Onde estão os arquivos .txt (Pasta no seu PC)
+# Onde estão os seus arquivos .txt
 CAMINHO_TXT = r'C:\Users\harah\Videos\Teste\Python\txt'
 
-# Onde você clonou o seu repositório Manga-Onn
-CAMINHO_REPO_LOCAL = r'C:\Users\harah\Documents\Manga-Onn'
+# Onde os mangás serão salvos no seu PC (Diretório do seu projeto)
+# IMPORTANTE: Use o caminho da pasta no seu Windows, não o link do GitHub.
+CAMINHO_DESTINO = r'C:\Users\harah\Videos\Teste\Python'
 
 def baixar_imagem(url, pasta_destino, nome_arquivo):
     try:
-        resposta = requests.get(url, timeout=15)
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        resposta = requests.get(url, headers=headers, timeout=15)
         if resposta.status_code == 200:
-            caminho = os.path.join(pasta_destino, nome_arquivo)
-            with open(caminho, 'wb') as f:
+            caminho_completo = os.path.join(pasta_destino, nome_arquivo)
+            with open(caminho_completo, 'wb') as f:
                 f.write(resposta.content)
             return True
     except:
         return False
 
-def enviar_ao_github():
-    print("\n--- Enviando para o GitHub ---")
-    try:
-        # Adiciona apenas as pastas de capas e mangas
-        subprocess.run(["git", "add", "capas/*", "mangas/*"], cwd=CAMINHO_REPO_LOCAL, check=True)
-        subprocess.run(["git", "commit", "-m", "Adicionando novos mangas e capas"], cwd=CAMINHO_REPO_LOCAL, check=True)
-        subprocess.run(["git", "push", "origin", "main"], cwd=CAMINHO_REPO_LOCAL, check=True)
-        print("Upload concluído!")
-    except Exception as e:
-        print(f"Erro no Git: {e}")
-
 def main():
-    pasta_mangas = os.path.join(CAMINHO_REPO_LOCAL, 'mangas')
-    pasta_capas = os.path.join(CAMINHO_REPO_LOCAL, 'capas')
+    # Define e cria as pastas 'mangas' e 'capas' no seu diretório
+    pasta_mangas_base = os.path.join(CAMINHO_DESTINO, 'mangas')
+    pasta_capas_base = os.path.join(CAMINHO_DESTINO, 'capas')
     
-    # Cria as pastas principais se não existirem
-    os.makedirs(pasta_mangas, exist_ok=True)
-    os.makedirs(pasta_capas, exist_ok=True)
+    os.makedirs(pasta_mangas_base, exist_ok=True)
+    os.makedirs(pasta_capas_base, exist_ok=True)
 
+    # Localiza todos os arquivos .txt na pasta de origem
     arquivos_txt = [f for f in os.listdir(CAMINHO_TXT) if f.endswith('.txt')]
     
+    if not arquivos_txt:
+        print(f"Nenhum arquivo .txt encontrado em: {CAMINHO_TXT}")
+        return
+
     for arquivo in arquivos_txt:
-        nome_manga = Path(arquivo).stem
-        diretorio_manga = os.path.join(pasta_mangas, nome_manga)
-        os.makedirs(diretorio_manga, exist_ok=True)
+        nome_do_manga = Path(arquivo).stem  # Pega o nome do arquivo (ex: "Naruto")
         
-        print(f"\nProcessando: {nome_manga}")
+        # Cria a pasta específica do mangá dentro de 'mangas'
+        pasta_manga_final = os.path.join(pasta_mangas_base, nome_do_manga)
+        os.makedirs(pasta_manga_final, exist_ok=True)
         
-        caminho_completo_txt = os.path.join(CAMINHO_TXT, arquivo)
-        with open(caminho_completo_txt, 'r') as f:
+        print(f"\nIniciando: {nome_do_manga}")
+        
+        caminho_arquivo_txt = os.path.join(CAMINHO_TXT, arquivo)
+        with open(caminho_arquivo_txt, 'r') as f:
             urls = [linha.strip() for linha in f.readlines() if linha.strip()]
             
             for i, url in enumerate(urls):
-                # 1. Se for a primeira imagem, salva também na pasta 'capas'
+                # 1. Primeira imagem vira a Capa na pasta 'capas'
                 if i == 0:
-                    nome_capa = f"Capa_{nome_manga}.jpg"
-                    print(f"  > Salvando Capa em /capas...")
-                    baixar_imagem(url, pasta_capas, nome_capa)
+                    nome_capa = f"{nome_do_manga}.jpg"
+                    baixar_imagem(url, pasta_capas_base, nome_capa)
+                    print(f"  > Capa salva com sucesso.")
                 
-                # 2. Salva a imagem normalmente na pasta do mangá
-                nome_img = f"{str(i+1).zfill(3)}.jpg"
-                print(f"  > Baixando página {i+1}...", end="\r")
-                baixar_imagem(url, diretorio_manga, nome_img)
-    
-    # Envia as alterações
-    enviar_ao_github()
+                # 2. Todas as imagens vão para a pasta do mangá (001.jpg, 002.jpg...)
+                nome_imagem = f"{str(i+1).zfill(3)}.jpg"
+                baixar_imagem(url, pasta_manga_final, nome_imagem)
+                print(f"  > Baixando página {i+1} de {len(urls)}...", end="\r")
+
+    print("\n\nDownload concluído! Agora você pode usar o 'git push' manualmente.")
 
 if __name__ == "__main__":
     main()
