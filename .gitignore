@@ -1,9 +1,0 @@
-# Ignorar pasta de links
-txt/
-
-# Ignorar o script Python
-manga github.py
-
-# Ignorar arquivos de sistema ou cache do python
-__pycache__/
-*.pyc
