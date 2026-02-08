@@ -1,0 +1,166 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #111;
+  color: #eee;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #0d0d0d;
+}
+
+.screen.active {
+  display: flex;
+}
+
+#loading {
+  font-size: 3rem;
+  color: #e91e63;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+#login {
+  gap: 20px;
+}
+
+input {
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  width: 280px;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: white;
+}
+
+button {
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 6px;
+  background: #e91e63;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #c2185b;
+}
+
+.manga-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1100px;
+  overflow-y: auto;
+}
+
+.manga-card {
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.manga-card:hover {
+  transform: scale(1.06);
+}
+
+.manga-card img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+  aspect-ratio: 3/4;
+  object-fit: cover;
+}
+
+.cover-container {
+  text-align: center;
+  padding: 20px;
+}
+
+#current-cover {
+  max-height: 70vh;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+}
+
+.reader {
+  background: #000;
+  position: relative;
+}
+
+.reader img {
+  max-width: 100%;
+  max-height: calc(100vh - 120px);
+  object-fit: contain;
+  margin: 0 auto;
+  display: block;
+}
+
+.controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.controls button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  min-width: 100px;
+}
+
+.back-btn {
+  background: #444;
+}
+
+.back-btn:hover {
+  background: #666;
+}
+
+#page-number {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.6);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  z-index: 10;
+}
+
+@media (max-width: 500px) {
+  .controls button {
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    min-width: 80px;
+  }
+}

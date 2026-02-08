@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manga Onn - Leitor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loading" class="screen active">
+  <div>Carregando...</div>
+</div>
+
+<div id="login" class="screen">
+  <h1>Manga Onn</h1>
+  <input type="text" id="username" placeholder="Usuário" />
+  <input type="password" id="password" placeholder="Senha" />
+  <button onclick="tryLogin()">Entrar</button>
+</div>
+
+<div id="manga-select" class="screen">
+  <h2>Selecione o mangá</h2>
+  <div class="manga-grid" id="manga-grid"></div>
+</div>
+
+<div id="cover-view" class="screen">
+  <div class="cover-container">
+    <img id="current-cover" alt="Capa do mangá">
+    <div class="controls">
+      <button class="back-btn" onclick="prevManga()">Back</button>
+      <button onclick="nextManga()">Next</button>
+      <button onclick="closeApp()">CloseApp</button>
+    </div>
+  </div>
+</div>
+
+<div id="reader" class="screen reader">
+  <div id="page-number">Página 1</div>
+  <img id="reader-img" alt="Página do mangá" onclick="nextPage()">
+
+  <div class="controls">
+    <button class="back-btn" onclick="prevPage()">Anterior</button>
+    <button onclick="nextPage()">Próxima</button>
+    <button onclick="backToMangaSelect()">BackManga</button>
+    <button onclick="closeApp()">CloseApp</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
