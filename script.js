@@ -1,43 +1,47 @@
-// ────────────────────────────────────────────────
 // CONFIGURAÇÃO - MUDE AQUI AS SUAS CREDENCIAIS
-// ────────────────────────────────────────────────
-const ADMIN_EMAIL   = "harahellima@gmail.com";          // ← COLOQUE SEU EMAIL AQUI
-const ADMIN_PASSWORD = "@AquaMarine22*";      // ← COLOQUE UMA SENHA FORTE AQUI
+const ADMIN_EMAIL    = "harahellima@gmail.com";       // ← ALTERE PARA O SEU EMAIL
+const ADMIN_PASSWORD = "@KramaCaroline22*";       // ← ALTERE PARA SUA SENHA
 
-// ────────────────────────────────────────────────
-// Configurações do repositório
-// ────────────────────────────────────────────────
+// Configurações do repositório GitHub
 const BASE_URL = "https://raw.githubusercontent.com/Pecorine125/Manga-Onn/main/";
 
 let currentMangaNumber = 0;
 let currentPage = 1;
 
-// ────────────────────────────────────────────────
+// Mostra/esconde telas
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// ────────────────────────────────────────────────
+// Login
 function tryLogin() {
-  const email    = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value.trim();
+  const emailInput = document.getElementById('email');
+  const passInput  = document.getElementById('password');
+
+  if (!emailInput || !passInput) {
+    alert("Erro: campos de login não encontrados no HTML.");
+    return;
+  }
+
+  const email    = emailInput.value.trim();
+  const password = passInput.value.trim();
 
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
     showScreen('manga-select');
     loadMangaCovers();
   } else {
     alert("Email ou senha incorretos!");
-    document.getElementById('password').value = ''; // limpa só a senha
+    passInput.value = ''; // limpa a senha em caso de erro
   }
 }
 
-// ────────────────────────────────────────────────
+// Carrega lista de capas
 function loadMangaCovers() {
   const grid = document.getElementById('manga-grid');
   grid.innerHTML = '';
 
-  // Mostrando de 0 até 99 — altere o número se quiser mais/menos
+  // Mostra de 0 até 99 (altere se quiser mais ou menos)
   for (let i = 0; i < 100; i++) {
     const div = document.createElement('div');
     div.className = 'manga-card';
@@ -51,7 +55,7 @@ function loadMangaCovers() {
   }
 }
 
-// ────────────────────────────────────────────────
+// Abre tela da capa
 function openManga(num) {
   currentMangaNumber = num;
   currentPage = 1;
@@ -65,7 +69,7 @@ function openManga(num) {
   showScreen('cover-view');
 }
 
-// ────────────────────────────────────────────────
+// Navegação entre capas
 function prevManga() {
   if (currentMangaNumber > 0) {
     currentMangaNumber--;
@@ -78,14 +82,14 @@ function nextManga() {
   openManga(currentMangaNumber);
 }
 
-// ────────────────────────────────────────────────
+// Inicia leitura ao clicar na capa
 document.getElementById('current-cover').onclick = function() {
   currentPage = 1;
   loadPage();
   showScreen('reader');
 };
 
-// ────────────────────────────────────────────────
+// Carrega página do mangá
 function loadPage() {
   const img = document.getElementById('reader-img');
   const padded = String(currentPage).padStart(3, '0');
@@ -124,12 +128,9 @@ function backToMangaSelect() {
 
 function closeApp() {
   alert("Fechando o aplicativo...\n\n(Em navegador normal esta ação não fecha a aba)");
-  // window.close(); // só funciona em janelas abertas por script
 }
 
-// ────────────────────────────────────────────────
-// Início
-// ────────────────────────────────────────────────
+// Início da aplicação
 setTimeout(() => {
   showScreen('login');
 }, 1500);
