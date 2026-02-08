@@ -1,45 +1,57 @@
-// Configurações
+// ────────────────────────────────────────────────
+// CONFIGURAÇÃO - MUDE AQUI AS SUAS CREDENCIAIS
+// ────────────────────────────────────────────────
+const ADMIN_EMAIL   = "harahellima@gmail.com";          // ← COLOQUE SEU EMAIL AQUI
+const ADMIN_PASSWORD = "@AquaMarine22*";      // ← COLOQUE UMA SENHA FORTE AQUI
+
+// ────────────────────────────────────────────────
+// Configurações do repositório
+// ────────────────────────────────────────────────
 const BASE_URL = "https://raw.githubusercontent.com/Pecorine125/Manga-Onn/main/";
 
 let currentMangaNumber = 0;
 let currentPage = 1;
 
-// Funções de navegação entre telas
+// ────────────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// Login (simples / qualquer usuário entra)
+// ────────────────────────────────────────────────
 function tryLogin() {
-  const user = document.getElementById('username').value.trim();
-  if (user.length > 0) {
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
     showScreen('manga-select');
     loadMangaCovers();
   } else {
-    alert("Digite um nome de usuário");
+    alert("Email ou senha incorretos!");
+    document.getElementById('password').value = ''; // limpa só a senha
   }
 }
 
-// Carrega as capas (0 a 59 — altere o limite se quiser)
+// ────────────────────────────────────────────────
 function loadMangaCovers() {
   const grid = document.getElementById('manga-grid');
   grid.innerHTML = '';
 
-  for (let i = 0; i < 60; i++) {
+  // Mostrando de 0 até 99 — altere o número se quiser mais/menos
+  for (let i = 0; i < 100; i++) {
     const div = document.createElement('div');
     div.className = 'manga-card';
     div.innerHTML = `
       <img src="${BASE_URL}capas/${i}.jpg" alt="Manga ${i}"
-           onerror="this.src='https://via.placeholder.com/140x180?text=?';">
-      <div style="margin-top:6px;">${i}</div>
+           onerror="this.src='https://via.placeholder.com/140x180/222/eee?text=${i}';">
+      <div style="margin-top:8px; font-size:0.9rem;">${i}</div>
     `;
     div.onclick = () => openManga(i);
     grid.appendChild(div);
   }
 }
 
-// Abre a tela da capa do mangá selecionado
+// ────────────────────────────────────────────────
 function openManga(num) {
   currentMangaNumber = num;
   currentPage = 1;
@@ -47,13 +59,13 @@ function openManga(num) {
   const cover = document.getElementById('current-cover');
   cover.src = `${BASE_URL}capas/${num}.jpg`;
   cover.onerror = () => {
-    cover.src = "https://via.placeholder.com/300x450?text=Sem+capa";
+    cover.src = "https://via.placeholder.com/400x600/222/eee?text=Sem+capa";
   };
 
   showScreen('cover-view');
 }
 
-// Navegação entre capas
+// ────────────────────────────────────────────────
 function prevManga() {
   if (currentMangaNumber > 0) {
     currentMangaNumber--;
@@ -66,14 +78,14 @@ function nextManga() {
   openManga(currentMangaNumber);
 }
 
-// Inicia a leitura (clique na capa)
+// ────────────────────────────────────────────────
 document.getElementById('current-cover').onclick = function() {
   currentPage = 1;
   loadPage();
   showScreen('reader');
 };
 
-// Carrega página do mangá
+// ────────────────────────────────────────────────
 function loadPage() {
   const img = document.getElementById('reader-img');
   const padded = String(currentPage).padStart(3, '0');
@@ -89,7 +101,7 @@ function loadPage() {
       loadPage();
       alert("Fim do capítulo (ou página não encontrada)");
     } else {
-      img.src = "https://via.placeholder.com/800x1200?text=Erro+ao+carregar";
+      img.src = "https://via.placeholder.com/800x1200/111/eee?text=Erro";
     }
   };
 }
@@ -111,11 +123,13 @@ function backToMangaSelect() {
 }
 
 function closeApp() {
-  alert("Fechando aplicativo...\n\n(Em navegador real window.close() só funciona em janelas abertas por script)");
-  // window.close(); // descomente se estiver em popup/janela controlada
+  alert("Fechando o aplicativo...\n\n(Em navegador normal esta ação não fecha a aba)");
+  // window.close(); // só funciona em janelas abertas por script
 }
 
-// Início da aplicação
+// ────────────────────────────────────────────────
+// Início
+// ────────────────────────────────────────────────
 setTimeout(() => {
   showScreen('login');
-}, 1800);
+}, 1500);

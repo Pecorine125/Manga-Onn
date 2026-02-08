@@ -14,9 +14,12 @@
 
 <div id="login" class="screen">
   <h1>Manga Onn</h1>
-  <input type="text" id="username" placeholder="Usuário" />
-  <input type="password" id="password" placeholder="Senha" />
+  <input type="email"    id="email"    placeholder="Email do admin" autocomplete="off" />
+  <input type="password" id="password" placeholder="Senha" autocomplete="off" />
   <button onclick="tryLogin()">Entrar</button>
+  <p style="margin-top: 24px; font-size: 0.9rem; color: #888;">
+    Acesso restrito ao administrador
+  </p>
 </div>
 
 <div id="manga-select" class="screen">
