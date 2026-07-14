@@ -42,7 +42,7 @@ function loadMangaCovers() {
   grid.innerHTML = '';
 
   // Mostra de 0 até 99 (altere se quiser mais ou menos)
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 500; i++) {
     const div = document.createElement('div');
     div.className = 'manga-card';
     div.innerHTML = `
